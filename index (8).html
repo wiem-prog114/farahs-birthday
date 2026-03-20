@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farouha is 23</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --rose: #f472b6; --peach: #fb923c; --lavender: #a78bfa; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: linear-gradient(135deg, #fce7f3 0%, #ede9fe 50%, #fef3c7 100%);
+  min-height: 100vh; overflow-x: hidden;
+}
+#lock-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #fce7f3 0%, #ede9fe 50%, #fef3c7 100%);
+}
+.lock-box {
+  background: rgba(255,255,255,0.65); backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.9); border-radius: 32px;
+  padding: 48px 40px; text-align: center; width: 340px;
+  box-shadow: 0 20px 60px rgba(244,114,182,0.2);
+}
+.lock-box h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #9333ea; margin-bottom: 6px; }
+.lock-box p { color: #a855f7; font-size: 0.9rem; margin-bottom: 24px; opacity: 0.8; }
+#pwd-input {
+  width: 100%; padding: 14px 20px; border-radius: 50px;
+  border: 2px solid rgba(167,139,250,0.3); background: rgba(255,255,255,0.95);
+  font-size: 1rem; text-align: center; color: #333; outline: none;
+  font-family: 'DM Sans', sans-serif; transition: border 0.2s;
+}
+#pwd-input:focus { border-color: var(--lavender); }
+#unlock-btn {
+  margin-top: 14px; width: 100%; padding: 14px; border: none; border-radius: 50px;
+  background: linear-gradient(135deg, var(--rose), var(--lavender));
+  color: white; font-size: 1rem; font-family: 'DM Sans', sans-serif;
+  font-weight: 500; cursor: pointer; transition: transform 0.2s;
+}
+#unlock-btn:hover { transform: scale(1.03); }
+#pwd-error { margin-top: 10px; color: #f43f5e; font-size: 0.85rem; min-height: 20px; }
+#main-page { display: none; }
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 40px 20px; position: relative;
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 7vw, 4.5rem);
+  background: linear-gradient(135deg, var(--rose), var(--lavender), var(--peach));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; line-height: 1.2; margin-bottom: 10px;
+  animation: fadeUp 1s ease both;
+}
+.hero-name {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: clamp(3rem, 10vw, 6rem);
+  background: linear-gradient(135deg, var(--peach), var(--rose));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; animation: fadeUp 1.2s ease both;
+}
+.hero-msg { font-size: 1.05rem; color: #7c3aed; max-width: 480px; line-height: 1.9; margin-top: 24px; animation: fadeUp 1.5s ease both; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+.section { max-width: 700px; margin: 0 auto; padding: 60px 24px; text-align: center; }
+.section-title { font-family: 'Playfair Display', serif; font-size: 2rem; color: #7c3aed; margin-bottom: 24px; }
+.memory-card {
+  background: rgba(255,255,255,0.6); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.85); border-radius: 24px;
+  padding: 32px; color: #6b21a8; font-size: 1.05rem; line-height: 1.9;
+}
+.polaroid-wall { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 10px; }
+.polaroid {
+  background: white; padding: 12px 12px 40px; border-radius: 4px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  transform: rotate(var(--rot)); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;
+}
+.polaroid:hover { transform: rotate(0deg) scale(1.06); box-shadow: 0 16px 40px rgba(0,0,0,0.18); z-index: 10; }
+.polaroid-img { width: 140px; height: 140px; object-fit: cover; display: block; background: linear-gradient(135deg, #fce7f3, #ede9fe); border-radius: 2px; }
+.polaroid-label { text-align: center; margin-top: 8px; font-size: 0.8rem; color: #9ca3af; font-family: 'Playfair Display', serif; font-style: italic; }
+.dose-section { max-width: 560px; margin: 0 auto; padding: 60px 24px; text-align: center; }
+.dose-label { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #a855f7; margin-bottom: 12px; }
+.dose-title { font-family: 'Playfair Display', serif; font-size: 2rem; color: #7c3aed; margin-bottom: 32px; }
+.dose-card {
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.9); border-radius: 28px;
+  padding: 48px 36px; box-shadow: 0 16px 50px rgba(167,139,250,0.2);
+  min-height: 220px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 16px;
+}
+.dose-emoji { font-size: 2.8rem; animation: floatBob 3s ease-in-out infinite; }
+@keyframes floatBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.dose-quote {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: clamp(1.05rem, 2.5vw, 1.3rem); color: #5b21b6; line-height: 1.7;
+  opacity: 0; transform: translateY(10px); transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.dose-quote.visible { opacity: 1; transform: translateY(0); }
+.dose-author { font-size: 0.82rem; color: #a855f7; letter-spacing: 0.05em; opacity: 0; transition: opacity 0.6s ease 0.2s; }
+.dose-author.visible { opacity: 1; }
+.dose-btn {
+  margin-top: 24px; background: linear-gradient(135deg, var(--rose), var(--lavender));
+  color: white; border: none; border-radius: 50px; padding: 14px 36px;
+  font-size: 0.95rem; font-family: 'DM Sans', sans-serif; font-weight: 500;
+  cursor: pointer; box-shadow: 0 8px 28px rgba(244,114,182,0.3); transition: transform 0.2s;
+}
+.dose-btn:hover { transform: translateY(-2px); }
+.dose-btn:active { transform: scale(0.97); }
+.dose-counter { margin-top: 12px; font-size: 0.78rem; color: #c084fc; min-height: 20px; }
+.surprise-section { text-align: center; padding: 40px 20px 20px; }
+.action-btn {
+  background: linear-gradient(135deg, var(--rose), var(--peach));
+  color: white; border: none; border-radius: 50px;
+  padding: 16px 40px; font-size: 1.05rem; font-family: 'DM Sans', sans-serif;
+  cursor: pointer; box-shadow: 0 8px 30px rgba(244,114,182,0.35); transition: transform 0.2s;
+}
+.action-btn:hover { transform: scale(1.05); }
+#final-msg {
+  margin-top: 32px; font-family: 'Playfair Display', serif;
+  font-style: italic; font-size: 1.6rem; color: #7c3aed;
+  opacity: 0; transform: translateY(20px); transition: all 1s ease;
+}
+#final-msg.show { opacity: 1; transform: translateY(0); }
+#music-btn {
+  position: fixed; bottom: 24px; right: 24px; width: 52px; height: 52px;
+  border-radius: 50%; background: rgba(255,255,255,0.75); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.9); font-size: 1.3rem; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1); z-index: 100;
+  display: none; align-items: center; justify-content: center;
+}
+.heart { position: fixed; pointer-events: none; font-size: 16px; animation: floatUp linear infinite; z-index: 0; }
+@keyframes floatUp { from { transform: translateY(100vh); opacity: 0.8; } to { transform: translateY(-10vh); opacity: 0; } }
+.cp { position: fixed; width: 8px; height: 8px; top: -10px; pointer-events: none; border-radius: 2px; z-index: 9998; animation: cffall linear forwards; }
+@keyframes cffall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+.balloon { position: fixed; font-size: 2.4rem; bottom: -80px; pointer-events: none; animation: brise linear forwards; z-index: 1; }
+@keyframes brise { to { transform: translateY(-120vh); } }
+footer { text-align: center; padding: 40px; color: #c084fc; font-size: 0.9rem; }
+@media (max-width: 600px) {
+  .lock-box { width: 90%; padding: 36px 24px; }
+  .polaroid-img { width: 110px; height: 110px; }
+  .dose-card { padding: 36px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div id="lock-screen">
+  <div class="lock-box">
+    <h2>Something magical is waiting ✨</h2>
+    <p>Enter the secret password</p>
+    <input type="password" id="pwd-input" placeholder="••••••••" autocomplete="off">
+    <button id="unlock-btn">Unlock 💖</button>
+    <p id="pwd-error"></p>
+  </div>
+</div>
+
+<div id="main-page">
+  <div class="hero">
+    <div class="hero-title">Happy Birthday,</div>
+    <div class="hero-name">farouhtyy💕</div>
+    <p class="hero-msg" id="typed-msg"></p>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">the highlight of growing up was getting to do it with you ...</h2>
+    <div class="memory-card">[TON MESSAGE PERSONNEL ICI]</div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Us 📸</h2>
+    <div class="polaroid-wall">
+     <div class="polaroid" style="--rot:-4deg"><img class="polaroid-img" src="dakhla.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#ede9fe)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:3deg"><img class="polaroid-img" src="college.jpeg" onerror="this.style.background='linear-gradient(135deg,#fef3c7,#fce7f3)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:-2deg"><img class="polaroid-img" src="pastel4.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:-2deg"><img class="polaroid-img" src="3ers.jpeg" onerror="this.style.background='linear-gradient(135deg,#ede9fe,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:5deg"><img class="polaroid-img" src="jadoghe.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:4deg"><img class="polaroid-img" src="pastelto7fa.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:-3deg"><img class="polaroid-img" src="mahdia.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+     <div class="polaroid" style="--rot:-5deg"><img class="polaroid-img" src="pastelkhir.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+      
+
+      <div class="polaroid" style="--rot:2deg"><img class="polaroid-img" src="palmier.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+    </div>
+  </div>
+
+  <div class="dose-section">
+    <p class="dose-label">✨ just for you</p>
+    <h2 class="dose-title">Reminders For Youu ...
+    </h2>
+    <div class="dose-card">
+      <div class="dose-emoji" id="dose-emoji">💖</div>
+      <p class="dose-quote visible" id="dose-quote">Whenever you need a little love, press the button below...</p>
+      <p class="dose-author" id="dose-author"></p>
+    </div>
+    <button class="dose-btn" onclick="newDose()">Give me my dose 💌</button>
+    <p class="dose-counter" id="dose-counter"></p>
+  </div>
+
+ 
+
+  <div style="text-align:center;padding:20px 20px 60px">
+    <button class="action-btn" onclick="playVoice()">🎤 Play voice message</button>
+  </div>
+
+  <footer>Made with love, just for you 💖</footer>
+</div>
+
+<div id="yt-player" style="display:none"></div>
+<audio id="voice" src="voice.mp3"></audio>
+<button id="music-btn" onclick="toggleMusic()">🎵</button>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+var PASSWORD = "farouha2004";
+
+document.getElementById('unlock-btn').addEventListener('click', tryUnlock);
+document.getElementById('pwd-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') tryUnlock();
+  document.getElementById('pwd-error').textContent = '';
+});
+
+function tryUnlock() {
+  var typed = document.getElementById('pwd-input').value;
+  if (typed === PASSWORD) {
+    document.getElementById('lock-screen').style.display = 'none';
+    var main = document.getElementById('main-page');
+    main.style.display = 'block';
+    var mb = document.getElementById('music-btn');
+    mb.style.display = 'flex';
+    launchConfetti();
+    launchBalloons();
+    typeMessage();
+    setTimeout(function(){ if(window.ytPlayer) window.ytPlayer.playVideo(); }, 1500);
+  } else {
+    document.getElementById('pwd-error').textContent = 'Wrong password, try again 😜';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
+  }
+}
+
+var MSG = "[TON MESSAGE ICI]";
+function typeMessage() {
+  var el = document.getElementById('typed-msg');
+  var i = 0;
+  var t = setInterval(function() {
+    el.textContent += MSG[i]; i++;
+    if (i >= MSG.length) clearInterval(t);
+  }, 45);
+}
+
+var doses = [
+  { emoji: "🌸", quote: "I am so proud of the woman you are becoming — and I have always, always adored the girl you are.", author: "— from me to you" },
+  { emoji: "💫", quote: "I believe in you so firmly it scares me sometimes. There is nothing you put your mind to that you cannot do. Nothing.", author: "— from me to you" },
+  { emoji: "🤍", quote: "Hanging out with you heals something in me every single time. I don't think you know how much.", author: "— from me to you" },
+  { emoji: "✨", quote: "Watching you shine is part of my dream. Your glow is not just yours — it lights up everyone around you.", author: "— from me to you" },
+  { emoji: "🌟", quote: "You have this magic — you put your hands on something and it becomes brighter. That's rare. That's you.", author: "— from me to you" },
+  { emoji: "💖", quote: "You deserve every good thing this world has to offer. I just wish you could see that as clearly as I do.", author: "— from me to you" },
+  { emoji: "🌸", quote: "You are allowed to be both a masterpiece and a work in progress simultaneously.", author: "— Sophia Bush" },
+  { emoji: "✨", quote: "Tu mérites tout ce que tu désires. Ne laisse personne te faire croire le contraire.", author: "— from me to you" },
+  { emoji: "🦋", quote: "The most beautiful thing you can wear is confidence.", author: "— Blake Lively" },
+  { emoji: "💫", quote: "Chaque jour est une nouvelle chance de briller encore plus fort.", author: "— from me to you" },
+  { emoji: "🌙", quote: "She believed she could, so she did.", author: "— R.S. Grey" },
+  { emoji: "🌺", quote: "Tu n'as pas besoin d'être parfaite pour être extraordinaire.", author: "— from me to you" },
+  { emoji: "💎", quote: "Be yourself — everyone else is already taken.", author: "— Oscar Wilde" },
+  { emoji: "🌈", quote: "Après chaque tempête, le soleil revient toujours.", author: "— from me to you" },
+  { emoji: "🔥", quote: "A strong woman looks a challenge in the eye and gives it a wink.", author: "— Gina Carey" },
+  { emoji: "🌻", quote: "Tu es plus courageuse que tu ne le crois, plus forte que tu ne le sembles.", author: "— from me to you" },
+  { emoji: "💐", quote: "Stop waiting for Friday, for summer, for someone. Happiness is achieved when you stop waiting for it.", author: "— Unknown" },
+  { emoji: "🎀", quote: "La vie est trop courte pour ne pas danser sous la pluie.", author: "— from me to you" },
+  { emoji: "⭐", quote: "You are the universe experiencing itself.", author: "— Alan Watts" },
+  { emoji: "🍀", quote: "Sois la femme que tu aurais voulu avoir à tes côtés à 16 ans.", author: "— from me to you" },
+  { emoji: "🌊", quote: "Life is not measured by the number of breaths we take, but by the moments that take our breath away.", author: "— Maya Angelou" },
+  { emoji: "🦚", quote: "Rayonne si fort que les lunettes de soleil ne suffisent plus.", author: "— from me to you" },
+  { emoji: "🌟", quote: "You are enough. You have always been enough.", author: "— from me to you" },
+  { emoji: "🎵", quote: "La musique que tu es, personne d'autre ne peut la jouer.", author: "— from me to you" },
+  { emoji: "🍓", quote: "Bloom where you are planted.", author: "— Unknown" },
+  { emoji: "🦋", quote: "Ton seul job c'est d'être toi-même, et tu le fais parfaitement.", author: "— from me to you" },
+  { emoji: "💜", quote: "What you seek is seeking you.", author: "— Rumi" },
+  { emoji: "🌙", quote: "Les étoiles ne brillent que dans l'obscurité — tu es une étoile.", author: "— from me to you" },
+  { emoji: "🎯", quote: "She is not lost. She is exploring.", author: "— Unknown" },
+  { emoji: "🌸", quote: "Sois douce avec toi-même. Tu fais de ton mieux.", author: "— from me to you" },
+  { emoji: "✨", quote: "You didn't come this far to only come this far.", author: "— Unknown" },
+  { emoji: "💖", quote: "Ta présence dans ce monde rend ce monde meilleur.", author: "— from me to you" },
+  { emoji: "🌺", quote: "The future belongs to those who believe in the beauty of their dreams.", author: "— Eleanor Roosevelt" },
+  { emoji: "🎨", quote: "Ta vie est ton chef-d'oeuvre. Peins-la avec audace.", author: "— from me to you" },
+  { emoji: "🦁", quote: "You are braver than you believe, stronger than you seem, smarter than you think.", author: "— A.A. Milne" },
+  { emoji: "🌙", quote: "Quand tu doutes de toi-même, souviens-toi de tout ce que tu as déjà surmonté.", author: "— from me to you" },
+
+  { emoji: "☀️", quote: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", author: "— سورة الشرح ٦  •  Avec la difficulté vient la facilité" },
+  { emoji: "🤍", quote: "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ", author: "— سورة الطلاق ٣  •  Celui qui s'en remet à Allah, Il lui suffit" },
+  { emoji: "🌿", quote: "فَاذْكُرُونِي أَذْكُرْكُمْ", author: "— سورة البقرة ١٥٢  •  Souviens-toi de Moi, Je me souviendrai de toi" },
+  { emoji: "💛", quote: "وَاللَّهُ يُحِبُّ الصَّابِرِينَ", author: "— سورة آل عمران ١٤٦  •  Allah aime ceux qui endurent avec patience" },
+  { emoji: "🌸", quote: "إِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ", author: "— سورة التوبة ١٢٠  •  Allah ne laisse pas perdre la récompense de ceux qui font le bien" },
+
+  { emoji: "🌹", quote: "الحياة جميلة لمن يعرف كيف يراها.", author: "— حكمة عربية" },
+  { emoji: "💪", quote: "لا تيأس، فالماء يُثقب الحجر ليس بالقوّة بل بالديمومة.", author: "— حكمة عربية" },
+  { emoji: "🌟", quote: "أنتِ أقوى مما تتخيلين، وأجمل مما تظنين.", author: "— من القلب إليكِ" },
+  { emoji: "🦋", quote: "بعد كل عاصفة تشرق الشمس، وبعد كل ليل يأتي الفجر.", author: "— حكمة عربية" },
+  { emoji: "✨", quote: "كوني النسخة الأجمل من نفسك، فلا أحد يستطيع أن يكون أنتِ.", author: "— من القلب إليكِ" },
+  { emoji: "🌺", quote: "الثقة بالنفس هي أول سر النجاح.", author: "— حكمة" },
+  { emoji: "💖", quote: "وجودكِ في هذا العالم هو نعمة لكل من يعرفكِ.", author: "— من القلب إليكِ" }
+];
+
+var doseCount = 0;
+var lastIdx = -1;
+var personalDone = false;
+var personalIdx = 0;
+var PERSONAL_COUNT = 6;
+
+function newDose() {
+  var idx;
+  if (!personalDone) {
+    idx = personalIdx;
+    personalIdx++;
+    if (personalIdx >= PERSONAL_COUNT) personalDone = true;
+  } else {
+    do { idx = Math.floor(Math.random() * doses.length); } while (idx === lastIdx && doses.length > 1);
+    lastIdx = idx;
+  }
+  var d = doses[idx];
+  var quoteEl = document.getElementById('dose-quote');
+  var authorEl = document.getElementById('dose-author');
+  var emojiEl = document.getElementById('dose-emoji');
+  quoteEl.classList.remove('visible');
+  authorEl.classList.remove('visible');
+  setTimeout(function() {
+    emojiEl.textContent = d.emoji;
+    quoteEl.textContent = '\u201c' + d.quote + '\u201d';
+    authorEl.textContent = d.author;
+    quoteEl.classList.add('visible');
+    authorEl.classList.add('visible');
+  }, 250);
+  doseCount++;
+  document.getElementById('dose-counter').textContent =
+    doseCount === 1 ? 'First dose of love received 💌' : doseCount + ' doses of love received 💌';
+  var colors = ['#f472b6','#a78bfa','#fb923c','#fbbf24'];
+  for (var i = 0; i < 35; i++) {
+    (function(i) {
+      setTimeout(function() {
+        var c = document.createElement('div');
+        c.className = 'cp';
+        c.style.left = (Math.random() * 100) + 'vw';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+        document.body.appendChild(c);
+        setTimeout(function() { if (c.parentNode) c.parentNode.removeChild(c); }, 3500);
+      }, i * 18);
+    })(i);
+  }
+}
+
+function launchConfetti() {
+  var colors = ['#f472b6','#a78bfa','#fb923c','#34d399','#60a5fa','#fbbf24'];
+  for (var i = 0; i < 100; i++) {
+    (function(i) {
+      setTimeout(function() {
+        var c = document.createElement('div');
+        c.className = 'cp';
+        c.style.left = (Math.random() * 100) + 'vw';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+        document.body.appendChild(c);
+        setTimeout(function() { if (c.parentNode) c.parentNode.removeChild(c); }, 5000);
+      }, i * 25);
+    })(i);
+  }
+}
+
+function launchBalloons() {
+  var emojis = ['🎈','🎀','🌸','✨','💖','🎊'];
+  for (var i = 0; i < 10; i++) {
+    (function(i) {
+      setTimeout(function() {
+        var b = document.createElement('div');
+        b.className = 'balloon';
+        b.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        b.style.left = (Math.random() * 100) + 'vw';
+        b.style.animationDuration = (Math.random() * 4 + 5) + 's';
+        document.body.appendChild(b);
+        setTimeout(function() { if (b.parentNode) b.parentNode.removeChild(b); }, 10000);
+      }, i * 350);
+    })(i);
+  }
+}
+
+var heartEmojis = ['💖','💕','🌸','✨'];
+for (var i = 0; i < 18; i++) {
+  (function(i) {
+    var h = document.createElement('div');
+    h.className = 'heart';
+    h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+    h.style.left = (Math.random() * 100) + 'vw';
+    h.style.animationDuration = (Math.random() * 6 + 7) + 's';
+    h.style.animationDelay = (Math.random() * 10) + 's';
+    document.body.appendChild(h);
+  })(i);
+}
+
+function showSurprise() {
+  document.getElementById('final-msg').classList.add('show');
+  launchConfetti();
+}
+
+function onYouTubeIframeAPIReady() {
+  window.ytPlayer = new YT.Player('yt-player', {
+    videoId: 'oDA1Q5GIBRE',
+    playerVars: { autoplay: 0, loop: 1, playlist: 'oDA1Q5GIBRE' },
+    events: { onReady: function(e) { e.target.setVolume(60); } }
+  });
+}
+
+function toggleMusic() {
+  var btn = document.getElementById('music-btn');
+  if (!window.ytPlayer) return;
+  var state = window.ytPlayer.getPlayerState();
+  if (state === 1) { window.ytPlayer.pauseVideo(); btn.textContent = '🎵'; }
+  else { window.ytPlayer.playVideo(); btn.textContent = '🔇'; }
+}
+
+function playVoice() {
+  var v = document.getElementById('voice');
+  v.currentTime = 0;
+  v.play();
+}
+</script>
+</body>
+</html>
