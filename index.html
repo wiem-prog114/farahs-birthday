@@ -171,24 +171,21 @@ footer { text-align: center; padding: 40px; color: #c084fc; font-size: 0.9rem; }
   <div class="section">
     <h2 class="section-title">Us 📸</h2>
     <div class="polaroid-wall">
-     <div class="polaroid" style="--rot:-4deg"><img class="polaroid-img" src="dakhla.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#ede9fe)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:-4deg"><img class="polaroid-img" src="dakhla.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#ede9fe)'"><div class="polaroid-label">memory ♡</div></div>
       <div class="polaroid" style="--rot:3deg"><img class="polaroid-img" src="college.jpeg" onerror="this.style.background='linear-gradient(135deg,#fef3c7,#fce7f3)'"><div class="polaroid-label">memory ♡</div></div>
-      <div class="polaroid" style="--rot:-2deg"><img class="polaroid-img" src="pastel4.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
       <div class="polaroid" style="--rot:-2deg"><img class="polaroid-img" src="3ers.jpeg" onerror="this.style.background='linear-gradient(135deg,#ede9fe,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
-      <div class="polaroid" style="--rot:5deg"><img class="polaroid-img" src="jadoghe.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
-      <div class="polaroid" style="--rot:4deg"><img class="polaroid-img" src="pastelto7fa.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
-      <div class="polaroid" style="--rot:-3deg"><img class="polaroid-img" src="mahdia.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
-     <div class="polaroid" style="--rot:-5deg"><img class="polaroid-img" src="pastelkhir.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
-      
-
-      <div class="polaroid" style="--rot:2deg"><img class="polaroid-img" src="palmier.jpeg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:5deg"><img class="polaroid-img" src="jadoghe.jpg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:-3deg"><img class="polaroid-img" src="mahdia.jpg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:2deg"><img class="polaroid-img" src="palmier.jpg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:-5deg"><img class="polaroid-img" src="pastelkhir.jpg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:4deg"><img class="polaroid-img" src="pastelto7fa.jpg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
+      <div class="polaroid" style="--rot:-2deg"><img class="polaroid-img" src="pastel4.jpg" onerror="this.style.background='linear-gradient(135deg,#fce7f3,#fef3c7)'"><div class="polaroid-label">memory ♡</div></div>
     </div>
   </div>
 
   <div class="dose-section">
     <p class="dose-label">✨ just for you</p>
-    <h2 class="dose-title">Reminders For Youu ...
-    </h2>
+    <h2 class="dose-title">Reminders for you ..</h2>
     <div class="dose-card">
       <div class="dose-emoji" id="dose-emoji">💖</div>
       <p class="dose-quote visible" id="dose-quote">Whenever you need a little love, press the button below...</p>
@@ -198,7 +195,7 @@ footer { text-align: center; padding: 40px; color: #c084fc; font-size: 0.9rem; }
     <p class="dose-counter" id="dose-counter"></p>
   </div>
 
- 
+  
 
   <div style="text-align:center;padding:20px 20px 60px">
     <button class="action-btn" onclick="playVoice()">🎤 Play voice message</button>
@@ -233,7 +230,15 @@ function tryUnlock() {
     launchConfetti();
     launchBalloons();
     typeMessage();
-    setTimeout(function(){ if(window.ytPlayer) window.ytPlayer.playVideo(); }, 1500);
+    var tries = 0;
+    var musicInterval = setInterval(function() {
+      if (window.ytPlayer && window.ytPlayer.playVideo) {
+        window.ytPlayer.playVideo();
+        clearInterval(musicInterval);
+      }
+      tries++;
+      if (tries > 20) clearInterval(musicInterval);
+    }, 500);
   } else {
     document.getElementById('pwd-error').textContent = 'Wrong password, try again 😜';
     document.getElementById('pwd-input').value = '';
