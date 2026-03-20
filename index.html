@@ -124,12 +124,14 @@ body {
 }
 #final-msg.show { opacity: 1; transform: translateY(0); }
 #music-btn {
-  position: fixed; bottom: 24px; right: 24px; width: 52px; height: 52px;
-  border-radius: 50%; background: rgba(255,255,255,0.75); backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.9); font-size: 1.3rem; cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1); z-index: 100;
-  display: none; align-items: center; justify-content: center;
+  position: fixed; bottom: 24px; right: 24px;
+  border-radius: 50px; background: linear-gradient(135deg, #f472b6, #a78bfa);
+  border: none; font-size: 0.9rem; cursor: pointer; color: white; font-weight: 500;
+  box-shadow: 0 4px 20px rgba(244,114,182,0.4); z-index: 100; padding: 12px 20px;
+  display: none; align-items: center; justify-content: center; gap: 6px;
+  font-family: "DM Sans", sans-serif; animation: pulse 2s ease-in-out infinite;
 }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
 .heart { position: fixed; pointer-events: none; font-size: 16px; animation: floatUp linear infinite; z-index: 0; }
 @keyframes floatUp { from { transform: translateY(100vh); opacity: 0.8; } to { transform: translateY(-10vh); opacity: 0; } }
 .cp { position: fixed; width: 8px; height: 8px; top: -10px; pointer-events: none; border-radius: 2px; z-index: 9998; animation: cffall linear forwards; }
@@ -185,7 +187,7 @@ footer { text-align: center; padding: 40px; color: #c084fc; font-size: 0.9rem; }
 
   <div class="dose-section">
     <p class="dose-label">✨ just for you</p>
-    <h2 class="dose-title">Reminders for you ..</h2>
+    <h2 class="dose-title">Reminders For You ...</h2>
     <div class="dose-card">
       <div class="dose-emoji" id="dose-emoji">💖</div>
       <p class="dose-quote visible" id="dose-quote">Whenever you need a little love, press the button below...</p>
@@ -196,7 +198,6 @@ footer { text-align: center; padding: 40px; color: #c084fc; font-size: 0.9rem; }
   </div>
 
   
-
   <div style="text-align:center;padding:20px 20px 60px">
     <button class="action-btn" onclick="playVoice()">🎤 Play voice message</button>
   </div>
@@ -206,7 +207,7 @@ footer { text-align: center; padding: 40px; color: #c084fc; font-size: 0.9rem; }
 
 <div id="yt-player" style="display:none"></div>
 <audio id="voice" src="voice.mp3"></audio>
-<button id="music-btn" onclick="toggleMusic()">🎵</button>
+<button id="music-btn" onclick="toggleMusic()">🎵 Play music</button>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -227,6 +228,7 @@ function tryUnlock() {
     main.style.display = 'block';
     var mb = document.getElementById('music-btn');
     mb.style.display = 'flex';
+    mb.style.alignItems = 'center';
     launchConfetti();
     launchBalloons();
     typeMessage();
@@ -419,10 +421,19 @@ function onYouTubeIframeAPIReady() {
 
 function toggleMusic() {
   var btn = document.getElementById('music-btn');
-  if (!window.ytPlayer) return;
+  if (!window.ytPlayer || !window.ytPlayer.getPlayerState) {
+    btn.textContent = '⏳ Loading...';
+    setTimeout(toggleMusic, 1000);
+    return;
+  }
   var state = window.ytPlayer.getPlayerState();
-  if (state === 1) { window.ytPlayer.pauseVideo(); btn.textContent = '🎵'; }
-  else { window.ytPlayer.playVideo(); btn.textContent = '🔇'; }
+  if (state === 1) {
+    window.ytPlayer.pauseVideo();
+    btn.innerHTML = '🎵 Play music';
+  } else {
+    window.ytPlayer.playVideo();
+    btn.innerHTML = '🔇 Pause music';
+  }
 }
 
 function playVoice() {
