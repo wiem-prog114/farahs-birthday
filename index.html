@@ -109,7 +109,6 @@ body {
 .dose-btn:hover { transform: translateY(-2px); }
 .dose-btn:active { transform: scale(0.97); }
 .dose-counter { margin-top: 12px; font-size: 0.78rem; color: #c084fc; min-height: 20px; }
-.surprise-section { text-align: center; padding: 40px 20px 20px; }
 .action-btn {
   background: linear-gradient(135deg, var(--rose), var(--peach));
   color: white; border: none; border-radius: 50px;
@@ -117,21 +116,14 @@ body {
   cursor: pointer; box-shadow: 0 8px 30px rgba(244,114,182,0.35); transition: transform 0.2s;
 }
 .action-btn:hover { transform: scale(1.05); }
-#final-msg {
-  margin-top: 32px; font-family: 'Playfair Display', serif;
-  font-style: italic; font-size: 1.6rem; color: #7c3aed;
-  opacity: 0; transform: translateY(20px); transition: all 1s ease;
-}
-#final-msg.show { opacity: 1; transform: translateY(0); }
 #music-btn {
   position: fixed; bottom: 24px; right: 24px;
   border-radius: 50px; background: linear-gradient(135deg, #f472b6, #a78bfa);
   border: none; font-size: 0.9rem; cursor: pointer; color: white; font-weight: 500;
   box-shadow: 0 4px 20px rgba(244,114,182,0.4); z-index: 100; padding: 12px 20px;
-  display: none; align-items: center; justify-content: center; gap: 6px;
-  font-family: "DM Sans", sans-serif; animation: pulse 2s ease-in-out infinite;
+  display: none; align-items: center; justify-content: center;
+  font-family: 'DM Sans', sans-serif;
 }
-@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
 .heart { position: fixed; pointer-events: none; font-size: 16px; animation: floatUp linear infinite; z-index: 0; }
 @keyframes floatUp { from { transform: translateY(100vh); opacity: 0.8; } to { transform: translateY(-10vh); opacity: 0; } }
 .cp { position: fixed; width: 8px; height: 8px; top: -10px; pointer-events: none; border-radius: 2px; z-index: 9998; animation: cffall linear forwards; }
@@ -197,7 +189,6 @@ footer { text-align: center; padding: 40px; color: #c084fc; font-size: 0.9rem; }
     <p class="dose-counter" id="dose-counter"></p>
   </div>
 
-  
   <div style="text-align:center;padding:20px 20px 60px">
     <button class="action-btn" onclick="playVoice()">🎤 Play voice message</button>
   </div>
@@ -205,11 +196,9 @@ footer { text-align: center; padding: 40px; color: #c084fc; font-size: 0.9rem; }
   <footer>Made with love, just for you 💖</footer>
 </div>
 
-<div id="yt-player" style="display:none"></div>
+<audio id="music" src="music.mp3" loop></audio>
 <audio id="voice" src="voice.mp3"></audio>
 <button id="music-btn" onclick="toggleMusic()">🎵 Play music</button>
-
-<script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
 var PASSWORD = "farouha2004";
@@ -228,19 +217,9 @@ function tryUnlock() {
     main.style.display = 'block';
     var mb = document.getElementById('music-btn');
     mb.style.display = 'flex';
-    mb.style.alignItems = 'center';
     launchConfetti();
     launchBalloons();
     typeMessage();
-    var tries = 0;
-    var musicInterval = setInterval(function() {
-      if (window.ytPlayer && window.ytPlayer.playVideo) {
-        window.ytPlayer.playVideo();
-        clearInterval(musicInterval);
-      }
-      tries++;
-      if (tries > 20) clearInterval(musicInterval);
-    }, 500);
   } else {
     document.getElementById('pwd-error').textContent = 'Wrong password, try again 😜';
     document.getElementById('pwd-input').value = '';
@@ -295,13 +274,11 @@ var doses = [
   { emoji: "🎨", quote: "Ta vie est ton chef-d'oeuvre. Peins-la avec audace.", author: "— from me to you" },
   { emoji: "🦁", quote: "You are braver than you believe, stronger than you seem, smarter than you think.", author: "— A.A. Milne" },
   { emoji: "🌙", quote: "Quand tu doutes de toi-même, souviens-toi de tout ce que tu as déjà surmonté.", author: "— from me to you" },
-
   { emoji: "☀️", quote: "إِنَّ مَعَ الْعُسْرِ يُسْرًا", author: "— سورة الشرح ٦  •  Avec la difficulté vient la facilité" },
   { emoji: "🤍", quote: "وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ", author: "— سورة الطلاق ٣  •  Celui qui s'en remet à Allah, Il lui suffit" },
   { emoji: "🌿", quote: "فَاذْكُرُونِي أَذْكُرْكُمْ", author: "— سورة البقرة ١٥٢  •  Souviens-toi de Moi, Je me souviendrai de toi" },
   { emoji: "💛", quote: "وَاللَّهُ يُحِبُّ الصَّابِرِينَ", author: "— سورة آل عمران ١٤٦  •  Allah aime ceux qui endurent avec patience" },
   { emoji: "🌸", quote: "إِنَّ اللَّهَ لَا يُضِيعُ أَجْرَ الْمُحْسِنِينَ", author: "— سورة التوبة ١٢٠  •  Allah ne laisse pas perdre la récompense de ceux qui font le bien" },
-
   { emoji: "🌹", quote: "الحياة جميلة لمن يعرف كيف يراها.", author: "— حكمة عربية" },
   { emoji: "💪", quote: "لا تيأس، فالماء يُثقب الحجر ليس بالقوّة بل بالديمومة.", author: "— حكمة عربية" },
   { emoji: "🌟", quote: "أنتِ أقوى مما تتخيلين، وأجمل مما تظنين.", author: "— من القلب إليكِ" },
@@ -406,33 +383,15 @@ for (var i = 0; i < 18; i++) {
   })(i);
 }
 
-function showSurprise() {
-  document.getElementById('final-msg').classList.add('show');
-  launchConfetti();
-}
-
-function onYouTubeIframeAPIReady() {
-  window.ytPlayer = new YT.Player('yt-player', {
-    videoId: 'oDA1Q5GIBRE',
-    playerVars: { autoplay: 0, loop: 1, playlist: 'oDA1Q5GIBRE' },
-    events: { onReady: function(e) { e.target.setVolume(60); } }
-  });
-}
-
 function toggleMusic() {
+  var m = document.getElementById('music');
   var btn = document.getElementById('music-btn');
-  if (!window.ytPlayer || !window.ytPlayer.getPlayerState) {
-    btn.textContent = '⏳ Loading...';
-    setTimeout(toggleMusic, 1000);
-    return;
-  }
-  var state = window.ytPlayer.getPlayerState();
-  if (state === 1) {
-    window.ytPlayer.pauseVideo();
-    btn.innerHTML = '🎵 Play music';
-  } else {
-    window.ytPlayer.playVideo();
+  if (m.paused) {
+    m.play();
     btn.innerHTML = '🔇 Pause music';
+  } else {
+    m.pause();
+    btn.innerHTML = '🎵 Play music';
   }
 }
 
